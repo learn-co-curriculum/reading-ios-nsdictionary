@@ -117,7 +117,7 @@ for (id key in contactDictionary)
 }
 ```
 
-# NSMutableDictionaries
+# NSMutableDictionary
 
 Instead of `NSDictionary`, we might want to use `NSMutableDictionary` in order to add objects to our dictionary after it has initially been created.
 
