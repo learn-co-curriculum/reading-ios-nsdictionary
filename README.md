@@ -15,7 +15,7 @@ A simple example you might consider is a basic contact list. A contact list cons
 
 ```
 NSDictionary *contactDictionary = @{@"Marc Bevilaqua":@"212-555-1212", 
-@"Jim Sherman":@"858-111-9999"},
+@"Jim Sherman":@"858-111-9999",
 @"Lena Ricciardi":@"973-666-1111"};
 ```
 
@@ -23,7 +23,7 @@ Alternatively, if we stored the phone numbers as `NSNumbers`, our `contactDictio
 
 ```
 NSDictionary *contactDictionary = @{@"Marc Bevilaqua":@2125551212, 
-@"Jim Sherman":@8581119999},
+@"Jim Sherman":@8581119999,
 	@"Lena Ricciardi":@9736661111};
 ```
 
@@ -57,7 +57,7 @@ So now you want to get a specific friend's phone number. Let's go back to our si
 
 ```
 NSDictionary *contactDictionary = @{@"Marc Bevilaqua":@"212-555-1212", 
-@"Jim Sherman":@"858-111-9999"},
+@"Jim Sherman":@"858-111-9999",
 @"Lena Ricciardi":@"973-666-1111"};
 ```
 
@@ -127,7 +127,7 @@ Let's say the phone number for Marc Bevilaqua changes. Let's go back to our simp
 
 ```
 NSDictionary *contactDictionary = @{@"Marc Bevilaqua":@"212-555-1212", 
-@"Jim Sherman":@"858-111-9999"},
+@"Jim Sherman":@"858-111-9999",
 @"Lena Ricciardi":@"973-666-1111"};
 ```
 
