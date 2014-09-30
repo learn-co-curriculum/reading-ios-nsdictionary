@@ -7,7 +7,7 @@ language: objc
 
 ## What is an NSDictionary?
 
-An NSDictionary is an Objective-C object that stores a series of "key / value pairs." What is a key / value pair you might ask? Simply put, a key / value pair is two objects, most often, with the "key" object being a string (though it may be any of the property list objects.) It is efficiently searched by key value
+An NSDictionary is an Objective-C object that stores a series of "key / value pairs." What is a key / value pair you might ask? Simply put, a key / value pair is two objects, most often, with the "key" object being a string (though it may be any of the property list objects.) It is efficiently searched by the key.
 
 ## Creating an NSDictionary
 
