@@ -9,7 +9,7 @@ language: objc
 
 An NSDictionary is an Objective-C object that stores a series of "key / value pairs." What is a key / value pair you might ask? Simply put, a key / value pair is two objects, most often, with the "key" object being a string (though it may be any of the property list objects (see below.) An NSDictionary is efficiently searched by the key.
 
-A simple example you might consider is a basic contact list. A contact list consists of a series of names, and a series of phone numbers. It is standard to look up a phone number by a key, the contact's name.
+A simple example you might consider is a basic contact list. A contact list consists of a series of names, and a series of phone numbers. It is standard to look up a phone number value by its key, the contact's name.
 
 Simply put, the property list objects are: `NSString`, `NSNumber`, `NSArray`, `NSDictionary`, `NSDate`, and `NSData`. 
 
