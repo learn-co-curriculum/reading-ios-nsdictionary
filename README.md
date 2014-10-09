@@ -15,7 +15,7 @@ Simply put, the property list objects are: `NSString`, `NSNumber`, `NSArray`, `N
 
 ## Creating an NSDictionary
 
-Let's move ahead with the example of a contact list. (For now, that will be all the contact info we have.) A dictionary creates pairs for these names and numbers such that we can search for a phone number, given a contact's name. Here is a sample of what an NSDictionary would look like. (We'll store our phone numbers as strings initially as well.)
+Let's move ahead with the example of a contact list with names and phone numbers. A dictionary creates pairs for these names and numbers such that we can search for a phone number, given a contact's name. Here is a sample of what an NSDictionary would look like. (We'll store our phone numbers as strings initially as well.)
 
 ```
 NSDictionary *contactDictionary = @{@"Marc Bevilaqua":@"212-555-1212", 
