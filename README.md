@@ -11,7 +11,7 @@ An NSDictionary is an Objective-C object that stores a series of "key / value pa
 
 A simple example you might consider is a basic contact list. A contact list consists of a series of names, and a series of phone numbers. It is standard to look up a phone number by a key, the contact's name.
 
-Simply put, a property list objects are: `NSString`, `NSNumber`, `NSArray`, `NSDictionary`, `NSDate`, `NSData`. 
+Simply put, the property list objects are: `NSString`, `NSNumber`, `NSArray`, `NSDictionary`, `NSDate`, and `NSData`. 
 
 ## Creating an NSDictionary
 
