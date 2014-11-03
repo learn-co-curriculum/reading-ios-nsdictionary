@@ -7,7 +7,7 @@ language: objc
 
 ## What is an NSDictionary?
 
-An NSDictionary is an Objective-C object that stores a series of "key / value pairs." What is a key / value pair you might ask? Simply put, a key / value pair is two objects, most often, with the "key" object being a string (though it may be any of the property list objects (see below.) An NSDictionary is efficiently searched by the key.
+An `NSDictionary` is an Objective-C object that stores a series of "key / value pairs." What is a key / value pair you might ask? Simply put, a key / value pair is two objects, most often, with the "key" object being a string (though it may be any of the property list objects, see below.) An `NSDictionary` is efficiently searched by the key.
 
 A simple example you might consider is a basic contact list. A contact list consists of a series of names, and a series of phone numbers. It is standard to look up a phone number value by its key, the contact's name.
 
@@ -15,7 +15,7 @@ Simply put, the property list objects are: `NSString`, `NSNumber`, `NSArray`, `N
 
 ## Creating an NSDictionary
 
-Let's move ahead with the example of a contact list with names and phone numbers. A dictionary creates pairs for these names and numbers such that we can search for a phone number, given a contact's name. Here is a sample of what an NSDictionary would look like. (We'll store our phone numbers as strings initially as well.)
+Let's move ahead with the example of a contact list with names and phone numbers. A dictionary creates pairs for these names and numbers such that we can search for a phone number, given a contact's name. Here is a sample of what an `NSDictionary` would look like. (We'll store our phone numbers as strings initially as well.)
 
 ```
 NSDictionary *contactDictionary = @{@"Marc Bevilaqua":@"212-555-1212", 
@@ -31,7 +31,7 @@ NSDictionary *contactDictionary = @{@"Marc Bevilaqua":@2125551212,
 	@"Lena Ricciardi":@9736661111};
 ```
 
-Now let's attempt a more advanced NSDictionary using the same example. In a real contact list, each of our contacts would have a phone number, an email address, and a favorite color. In this case, each contact would have its own NSDictionary of attributes!
+Now let's attempt a more advanced `NSDictionary` using the same example. In a real contact list, each of our contacts would have a phone number, an email address, and a favorite color. In this case, each contact would have its own `NSDictionary` of attributes!
 
 For example:
 
@@ -97,7 +97,7 @@ Now, in order to get Marc's phone number out of `contactDictionary`, we should d
 NSNumber *marcsPhoneNumber = contactDictionary[@"Marc Bevilaqua"][@"Phone Number"];
 ```
 
-Here, we have nested dictionaries, and we may use this shorthand literal syntax to access the phone number. Recall in our advanced contact list, the phone number is stored as an NSNumber. If you tried to place this value into an NSString, your program would crash.
+Here, we have nested dictionaries, and we may use this shorthand literal syntax to access the phone number. Recall in our advanced contact list, the phone number is stored as an `NSNumber`. If you tried to place this value into an `NSString`, your program would crash.
 
 You might also see the following old-school syntax used. (If you decide to use a database service like Parse down the line to store your contact list in the cloud, you'll see this often.)
 
@@ -105,14 +105,14 @@ You might also see the following old-school syntax used. (If you decide to use a
 NSNumber *marcsPhoneNumber = [[contactDictionary objectForKey:@"Marc Bevilaqua"] objectForKey:@"Phone Number"];
 ```
 
-Here we have used the NSDictionary method `objectForKey:` in order to obtain first, the value for the key "Marc Bevilaqua" (which is a dictionary itself.) And we have nested this method call inside a second method call that gets us the value for the key "Phone Number."
+Here we have used the `NSDictionary` method `objectForKey:` in order to obtain first, the value for the key "Marc Bevilaqua" (which is a dictionary itself.) And we have nested this method call inside a second method call that gets us the value for the key "Phone Number."
 
 Feel free to use the syntax most comfortable for you, but you should be familiar with both.
 
 
 ## Enumerating Dictionaries
 
-You have already learned how to use a for..in loop. Combined with NSDictionaries, we can run through all of the phone numbers in our contact list like so:
+You have already learned how to use a for..in loop. Combined with `NSDictionary` objects, we can run through all of the phone numbers in our contact list like so:
 
 ```
 for (id key in contactDictionary)
@@ -157,4 +157,4 @@ To remove an object for a key, you would use:
 
 ## Important tip
 
-If you are looping through an NSMutableDictionary, you cannot modify that dictionary inside of the loop. 
+If you are looping through an `NSMutableDictionary`, you cannot modify that dictionary inside of the loop. 
