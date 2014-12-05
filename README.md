@@ -37,16 +37,16 @@ Let's move ahead with the example of a contact list with names and phone numbers
 
 ```
 NSDictionary *contactDictionary = @{@"Marc Bevilaqua":@"212-555-1212", 
-@"Jim Sherman":@"858-111-9999",
-@"Lena Ricciardi":@"973-666-1111"};
+									   @"Jim Sherman":@"858-111-9999",
+									@"Lena Ricciardi":@"973-666-1111"};
 ```
 
 Alternatively, if we stored the phone numbers as `NSNumbers`, our `contactDictionary` would look like this:
 
 ```
 NSDictionary *contactDictionary = @{@"Marc Bevilaqua":@2125551212, 
-@"Jim Sherman":@8581119999,
-	@"Lena Ricciardi":@9736661111};
+									   @"Jim Sherman":@8581119999,
+									@"Lena Ricciardi":@9736661111};
 ```
 
 Now let's attempt a more advanced `NSDictionary` using the same example. In a real contact list, each of our contacts would have a phone number, an email address, and a favorite color. In this case, each contact would have its own `NSDictionary` of attributes!
@@ -55,20 +55,20 @@ For example:
 
 ```
 NSDictionary *marcBevilaquaDictionary = {@"Phone Number":@2125551212, 
-@"Email":@"me@marcbevilaqua.com",
-@"Color":@"Orange"};
+									     		@"Email":@"me@marcbevilaqua.com",
+											    @"Color":@"Orange"};
 
 NSDictionary *jimShermanDictionary = {@"Phone Number":@8581119999, 
-@"Email":@"me@jimsherman.com",
-@"Color":@"Blue"};
+											 @"Email":@"me@jimsherman.com",
+											 @"Color":@"Blue"};
 
 NSDictionary *lenaRicciardiDictionary = {@"Phone Number":@9736661111, 
-@"Email":@"me@lenaricciardi.com",
-@"Color":@"Seafoam"};
+												@"Email":@"me@lenaricciardi.com",
+												@"Color":@"Seafoam"};
 
 NSDictionary *contactDictionary = @{"Marc Bevilaqua":marcBevilaquaDictionary, 
-@"Jim Sherman":jimShermanDictionary, 
-@"Lena Ricciardi":lenaRicciardiDictionary};
+									  @"Jim Sherman":jimShermanDictionary, 
+								   @"Lena Ricciardi":lenaRicciardiDictionary};
 ```
 
 As you can see from the above, we have defined a complete dictionary for each contact and then made our "values" in `contactDictionary`, be dictionaries themselves! Dictionaries may be nested like this.
@@ -79,8 +79,8 @@ So now you want to get a specific friend's phone number. Let's go back to our si
 
 ```
 NSDictionary *contactDictionary = @{@"Marc Bevilaqua":@"212-555-1212", 
-@"Jim Sherman":@"858-111-9999",
-@"Lena Ricciardi":@"973-666-1111"};
+									   @"Jim Sherman":@"858-111-9999",
+									@"Lena Ricciardi":@"973-666-1111"};
 ```
 
 How can we ask our dictionary for Marc Bevilaqua's phone number? Easy.
@@ -93,16 +93,16 @@ By specifying the key we are seeking, we will get back its value. In this case, 
 
 ```
 NSDictionary *marcBevilaquaDictionary = {@"Phone Number":@2125551212, 
-@"Email":@"me@marcbevilaqua.com",
-@"Color":@"Orange"};
+												@"Email":@"me@marcbevilaqua.com",
+												@"Color":@"Orange"};
 
 NSDictionary *jimShermanDictionary = {@"Phone Number":@8581119999, 
-@"Email":@"me@jimsherman.com",
-@"Color":@"Blue"};
+											 @"Email":@"me@jimsherman.com",
+											 @"Color":@"Blue"};
 
 NSDictionary *lenaRicciardiDictionary = {@"Phone Number":@9736661111, 
-@"Email":@"me@lenaricciardi.com",
-@"Color":@"Seafoam"};
+												@"Email":@"me@lenaricciardi.com",
+												@"Color":@"Seafoam"};
 
 NSDictionary *contactDictionary = @{"Marc Bevilaqua":marcBevilaquaDictionary, 
 									   "Jim Sherman":jimShermanDictionary, 
@@ -155,10 +155,9 @@ Instead of `NSDictionary`, we might want to use `NSMutableDictionary` in order t
 Let's say the phone number for Marc Bevilaqua changes. Let's go back to our simple NSDictionary to make this more straightforward.
 
 ```
-NSDictionary *contactDictionary = @{
- @"Marc Bevilaqua":@"212-555-1212", 
-	@"Jim Sherman":@"858-111-9999",
- @"Lena Ricciardi":@"973-666-1111"};
+NSDictionary *contactDictionary = @{@"Marc Bevilaqua":@"212-555-1212", 
+									   @"Jim Sherman":@"858-111-9999",
+ 									@"Lena Ricciardi":@"973-666-1111"};
 ```
 
 A couple of ways to do this. First:
