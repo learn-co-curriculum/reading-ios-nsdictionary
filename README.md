@@ -5,11 +5,29 @@ language: objc
 
 # NSDictionary
 
+## The problem
+
+We've just finished learning a great way to store collections of data, `NSArray`. Let's take a contrived example now. We have friends named "1","2","3"..."100". And each of them has a phone number. With an array, we could simply store these in order and assuming all of our friends are uniquely named different numbers, we would have an easy way of pulling up the friend's phone number we are seeking.
+
+```objc
+NSString *phoneNumberForFriendNamed57 = friendPhoneArray[56];
+```
+
+ But unfortunately, none of my friends are named "1","45","62",or "99". And arrays can only be accessed by index. So what are we to do?
+
+
 ## What is an NSDictionary?
 
 An `NSDictionary` is an Objective-C object that stores a series of "key / value pairs." What is a key / value pair you might ask? Simply put, a key / value pair is two objects, most often, with the "key" object being a string (though it may be any of the property list objects, see below.) An `NSDictionary` is efficiently searched by the key.
 
-A simple example you might consider is a basic contact list. A contact list consists of a series of names, and a series of phone numbers. It is standard to look up a phone number value by its key, the contact's name.
+A simple example you might consider is the basic contact list we have already described. Wouldn't it be nice if we could do something along these lines?
+
+
+```objc
+NSString *phoneNumberForFriendNamedJoe = friendPhonesDictionary["Joe"];
+```
+
+A contact list consists of a series of names, and a series of phone numbers. It is standard to look up a phone number value by its "key", the contact's name.
 
 Simply put, the property list objects are: `NSString`, `NSNumber`, `NSArray`, `NSDictionary`, `NSDate`, and `NSData`. 
 
@@ -87,8 +105,8 @@ NSDictionary *lenaRicciardiDictionary = {@"Phone Number":@9736661111,
 @"Color":@"Seafoam"};
 
 NSDictionary *contactDictionary = @{"Marc Bevilaqua":marcBevilaquaDictionary, 
-@"Jim Sherman":jimShermanDictionary, 
-@"Lena Ricciardi":lenaRicciardiDictionary};
+									   "Jim Sherman":jimShermanDictionary, 
+								   @"Lena Ricciardi":lenaRicciardiDictionary};
 ```
 
 Now, in order to get Marc's phone number out of `contactDictionary`, we should do the following:
@@ -99,16 +117,23 @@ NSNumber *marcsPhoneNumber = contactDictionary[@"Marc Bevilaqua"][@"Phone Number
 
 Here, we have nested dictionaries, and we may use this shorthand literal syntax to access the phone number. Recall in our advanced contact list, the phone number is stored as an `NSNumber`. If you tried to place this value into an `NSString`, your program would crash.
 
-You might also see the following old-school syntax used. (If you decide to use a database service like Parse down the line to store your contact list in the cloud, you'll see this often.)
+## `objectForKey`
+
+You might also see the following old-school syntax used. We do not suggest you use this syntax, but you should know how to read it.
+
 
 ```
-NSNumber *marcsPhoneNumber = [[contactDictionary objectForKey:@"Marc Bevilaqua"] objectForKey:@"Phone Number"];
+NSNumber *marcsPhoneNumber = [[contactDictionary objectForKey:@"Marc Bevilaqua"] 
+												 objectForKey:@"Phone Number"];
 ```
 
 Here we have used the `NSDictionary` method `objectForKey:` in order to obtain first, the value for the key "Marc Bevilaqua" (which is a dictionary itself.) And we have nested this method call inside a second method call that gets us the value for the key "Phone Number."
 
-Feel free to use the syntax most comfortable for you, but you should be familiar with both.
+Again, because this syntax is more verbose, we don't suggest you default to it, but you may come across it, and therefore you must be familiar with it.
 
+## `alloc` and `init`
+
+As with all objects in Objective-C, you may also use the more traditional `alloc` and `init` to initialize a dictionary, like so:
 
 ## Enumerating Dictionaries
 
@@ -130,9 +155,10 @@ Instead of `NSDictionary`, we might want to use `NSMutableDictionary` in order t
 Let's say the phone number for Marc Bevilaqua changes. Let's go back to our simple NSDictionary to make this more straightforward.
 
 ```
-NSDictionary *contactDictionary = @{@"Marc Bevilaqua":@"212-555-1212", 
-@"Jim Sherman":@"858-111-9999",
-@"Lena Ricciardi":@"973-666-1111"};
+NSDictionary *contactDictionary = @{
+ @"Marc Bevilaqua":@"212-555-1212", 
+	@"Jim Sherman":@"858-111-9999",
+ @"Lena Ricciardi":@"973-666-1111"};
 ```
 
 A couple of ways to do this. First:
@@ -153,6 +179,24 @@ To remove an object for a key, you would use:
 
 ```
 [contactDictionary removeObjectForKey:@"Marc Bevilaqua"];
+```
+
+## `[[NSMutableDictionary alloc] init]`
+
+If you are mutating a dictionary, you may want to initialize it separately from assigning key / value pairs. You can do this using the more traditional syntax using `alloc` and `init`. Take the following examples where we have some names and phone numbers in arrays and want to create a useful dictionary out of them.
+
+```objc
+- (NSDictionary *)createDictionaryFromArrays {
+
+	NSArray *names = @[@"James", @"Marc", @"Rich"];
+	NSArray *phoneNumbers = @[@"858-111-9999", @"212-555-1212", @"973-666-1111"];
+
+	NSMutableDictionary *dictionaryIWillAddStuffTo = [[NSMutableDictionary alloc] init];
+
+	for (NSInteger i = 0; i < [phoneNumbers count]; i++) {
+		dictionaryIWillAddStuffTo[names[i]] = phoneNumbers[i];
+	}
+}
 ```
 
 ## Important tip
