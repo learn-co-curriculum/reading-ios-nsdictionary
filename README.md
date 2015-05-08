@@ -34,7 +34,7 @@ A contact list consists of a series of names, and a series of phone numbers. It 
 
 Let's move ahead with the example of a contact list with names and phone numbers. A dictionary creates pairs for these names and numbers such that we can search for a phone number, given a contact's name. Here is a sample of what creating that `NSDictionary` would look like, using the [literal syntax](http://cocoaheads.tumblr.com/post/17757846453/objective-c-literals-for-nsdictionary-nsarray) for dictionaries. (We'll store our phone numbers as strings initially as well.)
 
-```
+```objc
 NSDictionary *contactDictionary = @{ @"Marc Bevilaqua": @"212-555-1212", 
 									    @"Jim Sherman": @"858-111-9999",
 									 @"Lena Ricciardi": @"973-666-1111" };
@@ -42,7 +42,7 @@ NSDictionary *contactDictionary = @{ @"Marc Bevilaqua": @"212-555-1212",
 
 Alternatively, if we stored the phone numbers as `NSNumbers`, our `contactDictionary` would look like this:
 
-```
+```objc
 NSDictionary *contactDictionary = @{ @"Marc Bevilaqua": @2125551212, 
 									    @"Jim Sherman": @8581119999,
 									 @"Lena Ricciardi": @9736661111 };
@@ -52,7 +52,7 @@ Now let's attempt a more advanced `NSDictionary` using the same example. In a re
 
 For example:
 
-```
+```objc
 NSDictionary *marcBevilaquaDictionary = { @"Phone Number": @2125551212, 
 									     		 @"Email": @"me@marcbevilaqua.com",
 											     @"Color": @"Orange" };
@@ -76,7 +76,7 @@ As you can see from the above, we have defined a complete dictionary for each co
 
 So now you want to get a specific friend's phone number. Let's go back to our simple contact list:
 
-```
+```objc
 NSDictionary *contactDictionary = @{ @"Marc Bevilaqua": @"212-555-1212", 
 									    @"Jim Sherman": @"858-111-9999",
 									 @"Lena Ricciardi": @"973-666-1111" };
@@ -84,7 +84,7 @@ NSDictionary *contactDictionary = @{ @"Marc Bevilaqua": @"212-555-1212",
 
 How can we ask our dictionary for Marc Bevilaqua's phone number? Easy.
 
-```
+```objc
 NSString *marcsPhoneNumber = contactDictionary[@"Marc Bevilaqua"];
 ```
 
@@ -92,7 +92,7 @@ By specifying the key we are seeking, we will get back its value. In this case, 
 
 In order to get Marc's phone number out of `contactDictionary`, we should do the following:
 
-```
+```objc
 NSNumber *marcsPhoneNumber = contactDictionary[@"Marc Bevilaqua"][@"Phone Number"];
 ```
 
@@ -103,7 +103,7 @@ Here, we have nested dictionaries, and we may use this shorthand subscripting sy
 You might also see the following old-school syntax used. We do not suggest you use this syntax, but you should know how to read it.
 
 
-```
+```objc
 NSNumber *marcsPhoneNumber = [[contactDictionary objectForKey:@"Marc Bevilaqua"] 
 												 objectForKey:@"Phone Number"];
 ```
@@ -129,7 +129,7 @@ Use the literal syntax, but be aware that you may see these methods in older cod
 
 You have already learned how to use a `for..in` loop. `for..in` loops are defined to loop over the keys of `NSDictionary` objects, so we can run through all of the phone numbers in our contact list like so:
 
-```
+```objc
 for (NSString *contactName in contactDictionary)
 {
   NSLog(@"%@'s phone number is: %@", contactDictionary[contactName], contactName);
@@ -160,7 +160,7 @@ All of the examples we've seen thus far have not changed the dictionary -- we de
 
 Let's say the phone number for Marc Bevilaqua changes. Let's go back to our simple dictionary to make this more straightforward.
 
-```
+```objc
 NSDictionary *contactDictionary = @{ @"Marc Bevilaqua": @"212-555-1212", 
 									    @"Jim Sherman": @"858-111-9999",
  									 @"Lena Ricciardi": @"973-666-1111" };
@@ -191,13 +191,13 @@ But, as we just discussed, we have no means to mutate a straight `NSDictionary`.
 
 Now that we have a mutable dictionary, there are a couple of ways to change things in it. First:
 
-```
+```objc
 contactDictionary[@"Marc Bevilaqua"] = @"201-973-0101";
 ```
 
-Alternatively, you may see the following syntax, using the NSDictionary method `setObject:ForKey:`.
+Alternatively, you may see the following older syntax, using the NSDictionary method `setObject:ForKey:`.
 
-```
+```objc
 [contactDictionary setObject:@"201-973-0101" forKey:@"Marc Bevilaqua"];
 ```
 
@@ -205,7 +205,7 @@ Again, use what you feel most comfortable with. Both of these will change the va
 
 To remove an object for a key, you would use:
 
-```
+```objc
 [contactDictionary removeObjectForKey:@"Marc Bevilaqua"];
 ```
 
