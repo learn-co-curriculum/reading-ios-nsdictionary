@@ -1,251 +1,395 @@
----
-tags: dictionary, beginner
-language: objc
----
+# Key-value Pairing: `NSDictionary`
 
-# NSDictionary
+## Objectives
 
-## The problem
+1. Identify the usefulness of key-value pairs.
+2. Create an `NSDictionary` object with the literal syntax.
+3. Access values in a dictionary by key.
+4. Access dictionary values within loops.
+5. Create an `NSMutableDictionary` using `mutableCopy`.
+6. Add, edit, and remove key-values pairs in a mutable dictionary.
+7. Avoid modifying a mutable dictionary while iterating over it—use the `allKeys` array instead.
 
-We've just finished learning a great way to store collections of data, `NSArray`. Let's take a contrived example now. We have friends named "1", "2", "3",... "100", and each of them has a phone number. With an array, we could simply store these in order. Assuming all of our friends are uniquely named sequential integers, we would have an easy way of pulling up the friend's phone number we are seeking:
+## The Value of Keys
 
-```objc
-NSString *phoneNumberForFriendNamed57 = friendPhoneArray[56];
-```
-
- But unfortunately, none of my friends are named "1", "45", "62", or "99". And arrays can only be accessed by index. So what are we to do?
-
-
-## What is an NSDictionary?
-
-An `NSDictionary` is an Objective-C object that stores a series of "key-value pairs." What is a key-value pair you might ask? Simply put, a key-value pair is two objects, most often, with the "key" object being a string (though it may be any objects satisfying a few constraints -- see below.) An `NSDictionary` can be efficiently indexed by the key. A side-effect of that efficiency is that a dictionary can only have one value associated with each key, and that the order of elements in a dictionary is not guaranteed.
-
-A simple example you might consider is the basic contact list we have already described. Wouldn't it be nice if we could do something along these lines?
-
+We've introduced ordered collections in the form of arrays (`NSArray` & `NSMutableArray`) which are powerful tools with many uses. But what happens when we have a set of unique information types that we need to keep together, such as the different fields attributed to someone in a list of contacts? We *could* use an array to store their information:
 
 ```objc
-NSString *phoneNumberForFriendNamedJoe = friendPhonesDictionary["Joe"];
+NSArray *jenny = @[ @"Jenny",
+                    @"Friend",
+                    @"(555) 867-5309",
+                    @"jenny@email.com",
+                    @"123 Streetname",
+                    @"Anywhere, USA",
+                    @"00409"           ];
+    
+NSLog(@"%@", jenny);
+```
+This will print:
+
+```
+(
+    Jenny,
+    Friend,
+    "(555) 867-5309",
+    "jenny@email.com",
+    "123 Street Name",
+    "Anywhere, USA",
+    00409
+)
 ```
 
-A contact list consists of a series of names, and a series of phone numbers. It is standard to look up a phone number value by its "key", the contact's name.
-
-
-## Creating an `NSDictionary`
-
-Let's move ahead with the example of a contact list with names and phone numbers. A dictionary creates pairs for these names and numbers such that we can search for a phone number, given a contact's name. Here is a sample of what creating that `NSDictionary` would look like, using the [literal syntax](http://cocoaheads.tumblr.com/post/17757846453/objective-c-literals-for-nsdictionary-nsarray) for dictionaries. (We'll store our phone numbers as strings initially as well.)
+But there's a couple of inherent problems with storing this kind of information in an array. First, we can't be quite certain just by looking at each piece information what its meant to represent. Sure we can infer what a phone number is, but is Jenny's last name "Friend" or is that the description of our relationship to her? We could solve this by creating another array called "keys" that stores the information type for each index:
 
 ```objc
-NSDictionary *contactDictionary = @{ @"Marc Bevilaqua": @"212-555-1212", 
-									    @"Jim Sherman": @"858-111-9999",
-									 @"Lena Ricciardi": @"973-666-1111" };
+NSArray *keys = @[ @"first_name",
+                   @"relationship",
+                   @"phone_number",
+                   @"email_address",
+                   @"physical_address",
+                   @"city_state",
+                   @"zip_code"         ];
+                   
+for (NSUInteger i = 0; i < jenny.count; i++) {
+    NSLog(@"%@ : %@", keys[i], jenny[i]);
+}
+```
+This will print:
+
+```
+first_name : Jenny
+relationship : Friend
+phone_number : (555) 867-5309
+email_address : jenny@email.com
+physical_address : 123 Street Name
+city_state : Anywhere, USA
+zip_code : 00409
 ```
 
-Alternatively, if we stored the phone numbers as `NSNumbers`, our `contactDictionary` would look like this:
+This brings us to our second problem: what if we want add a new piece of information, like Jenny's last name? We have to keep the order of not only both the `keys` array and the `jenny` array synchronized, but we have to keep the order of every other contact array synchronized as well:
 
 ```objc
-NSDictionary *contactDictionary = @{ @"Marc Bevilaqua": @2125551212, 
-									    @"Jim Sherman": @8581119999,
-									 @"Lena Ricciardi": @9736661111 };
+NSArray *keys = @[ @"first_name",
+                   @"last_name",
+                   @"relationship",
+                   @"phone_number",
+                   @"email_address",
+                   @"physical_address",
+                   @"city_state",
+                   @"zip_code"         ];
+
+
+NSArray *jenny = @[ @"Jenny",
+                    @"Curran",
+                    @"Friend",
+                    @"(555) 867-5309",
+                    @"jenny@email.com",
+                    @"123 Street Name",
+                    @"Anywhere, USA",
+                    @"00409"           ];
+    
+
+NSArray *unclebob = @[ @"Bob",
+                       @"",       // we must insert an empty string as a placeholder
+                       @"Uncle",
+                       @"(555) 876-1234",
+                       @"unclebob@email.com",
+                       @"234 Street Name",
+                       @"Somewhere, USA",
+                       @"00201"           ];
 ```
 
-Now let's attempt a more advanced `NSDictionary` using the same example. In a real contact list, each of our contacts would have a phone number, an email address, and a favorite color. In this case, each contact would have its own `NSDictionary` of attributes!
+This is a lot of work, and if we miss adding a field to just one contact's array we could cause a crash due to a short index; or if we add it in the wrong place, then the information won't line up correctly with their descriptions in the `keys` array. With these small groups of information, it doesn't seem like an unmanageable task, but when dealing with thousands of groups, each with hundreds of information fields, these manual adjustments become untenable.
 
-For example:
+Enter key-value pairing.
+
+## Creating An `NSDictionary`
+
+Dictionaries are a collection type common to most programming languages. They store an unordered group of key-value pairs. A key-value pair is a binding of two objects: the descriptive accessor of a piece of information (the "key"), and the information itself (the "value"). The base dictionary type in Objective-C is `NSDictionary` and has its own literal syntax that looks like this:
 
 ```objc
-NSDictionary *marcBevilaquaDictionary = { @"Phone Number": @2125551212, 
-									     		 @"Email": @"me@marcbevilaqua.com",
-											     @"Color": @"Orange" };
+NSDictionary *keyAndValue   = @{ key : value };
 
-NSDictionary *jimShermanDictionary = { @"Phone Number": @8581119999, 
-											  @"Email": @"me@jimsherman.com",
-											  @"Color":@"Blue" };
-
-NSDictionary *lenaRicciardiDictionary = { @"Phone Number": @9736661111, 
-												 @"Email": @"me@lenaricciardi.com",
-												 @"Color": @"Seafoam" };
-
-NSDictionary *contactDictionary = @{ "Marc Bevilaqua": marcBevilaquaDictionary, 
-									   @"Jim Sherman": jimShermanDictionary, 
-								    @"Lena Ricciardi": lenaRicciardiDictionary };
+NSDictionary *keysAndValues = @{ key1 : value1, 
+                                 key2 : value2 };
 ```
 
-As you can see from the above, we have defined a complete dictionary for each contact and then made our "values" in `contactDictionary`, be dictionaries themselves! Dictionaries may be nested like this.
+The dictionary literal employs the curly braces (`{``}`) to wrap its list of key-value pairs which are separated from each other in the list using `,`s ("commas"); the keys and values themselves are separated from each other with a `:` ("colon") with the key on the left and the value on the right.
 
-## Accessing values in an NSDictionary
+**Top-tip:** *While there are some limits on which objects can be keys, it's most common to use strings. Values can be of any object type, even other collections.* 
 
-So now you want to get a specific friend's phone number. Let's go back to our simple contact list:
+Translating our `jenny` array into a dictionary with this syntax would look like this:
 
 ```objc
-NSDictionary *contactDictionary = @{ @"Marc Bevilaqua": @"212-555-1212", 
-									    @"Jim Sherman": @"858-111-9999",
-									 @"Lena Ricciardi": @"973-666-1111" };
-```
+//                            KEYS               VALUES
+NSDictionary *jenny = @{ @"first_name"       : @"Jenny",
+                         @"relationship"     : @"Friend",
+                         @"phone_number"     : @"(555) 867-5309",
+                         @"email_address"    : @"jenny@email.com",
+                         @"physical_address" : @"123 Street Name",
+                         @"city_state"       : @"Anywhere, USA",
+                         @"zip_code"         : @"00409"        };
 
-How can we ask our dictionary for Marc Bevilaqua's phone number? Easy.
+NSLog(@"%@", jenny);
+```
+This might print:
+
+```
+{
+    "city_state" = "Anywhere, USA";
+    "email_address" = "jenny@email.com";
+    "first_name" = Jenny;
+    "phone_number" = "(555) 867-5309";
+    "physical_address" = "123 Street Name";
+    relationship = Friend;
+    "zip_code" = 00409;
+}
+```
+Did you notice how the order changed when it printed? That's because Apple does ***not*** guarantee that a dictionary will maintain the order of its components (you should always expect that it won't). What it *does* guarantee, however, is the key-value binding. Because of this, dictionaries do not respond to indexing.
+
+Then how do we access the information it contains? By sending it a valid key, of course.
+
+## Accessing A Dictionary
+
+In a similar syntax to accessing an array by index:
 
 ```objc
-NSString *marcsPhoneNumber = contactDictionary[@"Marc Bevilaqua"];
+Class *element = array[index];
 ```
-
-By specifying the key we are seeking, we will get back its value. In this case, that value is a string. But it could be any type of object. Remember, the computer is only so smart. If you try to assign the value of a key in a dictionary to an object of a type that it is not (i.e. trying to put an NSArray into an NSString object), you can expect your program to crash. Let's take our advanced contact list example to see what I mean.
-
-In order to get Marc's phone number out of `contactDictionary`, we should do the following:
+We can access the information in a dictionary by key:
 
 ```objc
-NSNumber *marcsPhoneNumber = contactDictionary[@"Marc Bevilaqua"][@"Phone Number"];
+Class *element = dictionary[key];
 ```
 
-Here, we have nested dictionaries, and we may use this shorthand subscripting syntax to access the phone number. Recall in our advanced contact list, the phone number is stored as an `NSNumber`. If you tried to place this value into an `NSString`, your program will (eventually) crash. The actual assignment won't cause a crash, but any attempt to call an `NSString` method on the value would blow up.
-
-## `objectForKey`
-
-You might also see the following old-school syntax used. We do not suggest you use this syntax, but you should know how to read it.
-
+To access Jenny's phone number from the above dictionary that we created to store her information, we can write the following:
 
 ```objc
-NSNumber *marcsPhoneNumber = [[contactDictionary objectForKey:@"Marc Bevilaqua"] 
-												 objectForKey:@"Phone Number"];
+NSString *jennysPhoneNumber = jenny[@"phone_number"];
+
+NSLog(@"%@", jennysPhoneNumber);
 ```
+This will print: `(555) 867-5309`.
 
-Here we have used the `NSDictionary` method `objectForKey:` in order to obtain first, the value for the key "Marc Bevilaqua" (which is a dictionary itself.) And we have nested this method call inside a second method call that gets us the value for the key "Phone Number."
+**//Flat-fact:** *The parenthetical notation for telephone area codes in the United States was created by [Ladislav Sutnar](https://en.wikipedia.org/wiki/Ladislav_Sutnar) who pioneered the field of [information design](https://en.wikipedia.org/wiki/Information_design) in the mid-20th Century (c. 1941-1960).*
 
-Again, because this syntax is more verbose, we don't suggest you default to it, but you may come across it, and therefore you must be familiar with it.
+#### Recognizing `objectForKey:`
 
-## `alloc` and `init`
-
-As with all objects in Objective-C, you may also use the more traditional `alloc` and `init` to initialize a dictionary, like so:
+This literal syntax for accessing a dictionary implicitly calls the `objectForKey:` method on `NSDictionary`. You may see this method syntax in examples online which you can implement in your own code using the literal.
 
 ```objc
-NSDictionary *marcDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:@2125551212, @"Phone Number", nil]`
+NSString *jennysPhoneNumber = [jenny objectForKey:@"phone_number"];
+
+NSLog(@"%@", jennysPhoneNumber);
 ```
-
-Like `-objectForKey`, this syntax is old, verbose, error-prone (you *must* add `nil` at the end), and somewhat confusing (values come before their keys?!). There is also a method `-initWithObjects:forKeys:` that matches up corresponding elements of two arrays. It is equally verbose but arguably less error-prone.
-
-Use the literal syntax, but be aware that you may see these methods in older code.
-
+This will also print: `(555) 867-5309`.
 
 ## Enumerating Dictionaries
 
-You have already learned how to use a `for..in` loop. `for..in` loops are defined to loop over the keys of `NSDictionary` objects, so we can run through all of the phone numbers in our contact list like so:
+We can access the entire contents of a dictionary sequentially by iterating over it with a `for-in` loop. The example syntax tells the compiler to treat each key as a string:
 
 ```objc
-for (NSString *contactName in contactDictionary)
+for (NSString *key in dictionary) {
+    Class *element = dictionary[key];
+}
+```
+
+So, we can use a `for-in` loop to print out each of the details we have for Jenny:
+
+```objc
+NSDictionary *jenny = @{ @"first_name"       : @"Jenny",
+                         @"relationship"     : @"Friend",
+                         @"phone_number"     : @"(555) 867-5309",
+                         @"email_address"    : @"jenny@email.com",
+                         @"physical_address" : @"123 Street Name",
+                         @"city_state"       : @"Anywhere, USA",
+                         @"zip_code"         : @"00409"        };
+    
+for (NSString *key in jenny) {
+    NSLog(@"Jenny's %@ is %@.", key, jenny[key]);
+}
+```
+This will print: 
+
+```
+Jenny's email_address is jenny@email.com.
+Jenny's zip_code is 00409.
+Jenny's physical_address is 123 Street Name.
+Jenny's relationship is Friend.
+Jenny's phone_number is (555) 867-5309.
+Jenny's city_state is Anywhere, USA.
+Jenny's first_name is Jenny.
+```
+Notice again that the order was not preserved.
+
+#### Grabbing `allKeys`
+
+![](https://curriculum-content.s3.amazonaws.com/ios/reading-ios-nsdictionary/grabAllKeys_meme.jpg)
+
+There's a handy method on `NSDictionary` called `allKeys` that returns an array of all of the keys (and only the keys). This is helpful in sorting and searching (which we'll discuss in other readings), but also in defensive programming to make sure that a dictionary will respond to a key before attempting to access it. Implementing a "key check" can avoid receiving `nil` from attempts to access a dictionary key that doesn't exist:
+
+```objc
+NSLog(@"%@", jenny[@"last_name"]);
+```
+Since we haven't included a "last_name" key-value pair in Jenny's information dictionary, this will print: `(null)`.
+
+Adding a check can look like this:
+
+```objc
+if ([ [jenny allKeys] containsObject:@"last_name"]) {
+    NSLog(@"%@", jenny[@"last_name"]);
+} else {
+    NSLog(@"Jenny's last name has not been saved.");
+}
+```
+Instead of `(null)`, we'll now get a helpful message that `Jenny's last name has not been saved.`.
+
+## Using `NSMutableDictionary`
+
+So what if we want to add Jenny's last name to the dictionary at some later point in our code? So far we've been using the static `NSDictionary` class which would require us to rewrite the entire dictionary from scratch. Fortunately, just like `NSArray` there is a mutable class, in this case `NSMutableDictionary`. 
+
+The relationship between `NSDictionary` and `NSMutableDictionary` is similar to that between `NSArray` and `NSMutableArray`: `NSMutableDictionary` adds functionality to `NSDictionary`, but the literal syntax cannot be used to create a mutable one directly.
+
+#### Creating A Dictionary With `mutableCopy`
+
+While dictionaries have initializer methods such as `initWithObjects:forKeys:`, using them with large key-value groups quickly becomes confusing to read and difficult to correctly modify. Using the `mutableCopy` method to create an instance of a mutable dictionary is perhaps the most legible and easily maintained method. 
+
+You can use `mutableCopy` on an existing dictionary like this:
+
+```objc
+NSDictionary *jenny = @{ @"first_name"       : @"Jenny",
+                         @"relationship"     : @"Friend",
+                         @"phone_number"     : @"(555) 867-5309",
+                         @"email_address"    : @"jenny@email.com",
+                         @"physical_address" : @"123 Street Name",
+                         @"city_state"       : @"Anywhere, USA",
+                         @"zip_code"         : @"00409"        };
+
+
+NSMutableDictionary *mJenny = [jenny mutableCopy];
+```
+
+Or by embedding the dictionary literal syntax directly into the method call like this:
+
+```objc
+NSMutableDictionary *mJenny = [ @{ @"first_name"       : @"Jenny",
+                                   @"relationship"     : @"Friend",
+                                   @"phone_number"     : @"(555) 867-5309",
+                                   @"email_address"    : @"jenny@email.com",
+                                   @"physical_address" : @"123 Street Name",
+                                   @"city_state"       : @"Anywhere, USA",
+                                   @"zip_code"         : @"00409"        }
+                               mutableCopy ];
+```
+
+#### Modifying A Mutable Dictionary
+
+##### Adding A Key-value Pair
+
+Now that we have a mutable dictionary `mJenny`, we can add Jenny's last name to the mutable dictionary using the literal syntax:
+
+```objc
+mJenny[@"last_name"] = @"Curran";
+
+NSLog(@"%@", mJenny);
+```
+This will print:
+
+```
 {
-  NSLog(@"%@'s phone number is: %@", contactDictionary[contactName], contactName);
+    "city_state" = "Anywhere, USA";
+    "email_address" = "jenny@email.com";
+    "first_name" = Jenny;
+    "last_name" = Curran;
+    "phone_number" = "(555) 867-5309";
+    "physical_address" = "123 Street Name";
+    relationship = Friend;
+    "zip_code" = 00409;
 }
 ```
 
-Keep in mind that **order is not guaranteed**, so don't be surprised if this prints out the elements in different orders across different executions of your application. Do not rely on or assume the order of keys in a dictionary!
-
-Another way to iterate over a dictionary is to manually grab its keys and loop over those. You can get an array of all of the keys in a dictionary using the `-allKeys` method:
+You may also see the implicit method call `setObject:forKey:` in examples online. This is accomplishing the same thing:
 
 ```objc
-NSArray *contactNames = [contactDictionary allKeys];
+[mJenny setObject:@"Curran" forKey:@"last_name"];
+```
+However, notice that the value is called "object" and precedes the setting of the key. Because of the ease of confusion in using or reading this method, it's best to use the literal syntax when adding a key-value pair to a mutable dictionary.
 
-for(NSString *contactName in contactNames)
+##### Editing A Key-value Pair
+
+With mutable dictionaries, we can use this same syntax to change the value of an existing key, such as if we happen to skip Jenny's birthday party and we want to make a note that she isn't pleased with us:
+
+```objc
+mJenny[@"relationship"] = @"It's Complicated";
+```
+##### Removing A Key-value Pair
+
+There is not a literal syntax for deleting a key-value pair from a mutable dictionary. The `removeObjectForKey:` method must be used. If Jenny changes her phone number, for example, but doesn't tell us her new one to update it with, we can delete the old value like this:
+
+```objc
+[mJenny removeObjectForKey:@"phone_number"];
+
+NSLog(@"%@", mJenny);
+```
+This will now print:
+
+```
 {
-  NSLog(@"%@'s phone number is: %@", contactDictionary[contactName], contactName);
+    "city_state" = "Anywhere, USA";
+    "email_address" = "jenny@email.com";
+    "first_name" = Jenny;
+    "last_name" = Curran;
+    "physical_address" = "123 Street Name";
+    relationship = "It's Complicated";
+    "zip_code" = 00409;
 }
 ```
+This will keep us from accidentally texting the stranger who gets her old number.
 
-This is functionally equivalent to the `for..in` loop (though perhaps slightly slower). But it can be useful if you need to sort the keys beforehand, or need direct access to the keys for some other reason.
+#### Limitation While Enumerating (Looping)
 
-
-# `NSMutableDictionary`
-
-All of the examples we've seen thus far have not changed the dictionary -- we define it as a literal and never modify it. Just as there are mutable and immutable arrays, there are mutable dictionaries. Use `NSMutableDictionary` in order to add or remove objects to our dictionary after it has initially been created. `NSMutableDictionary` is a subclass of `NSDictionary`, so all the methods we've covered thus far will continue to work on your mutable instances.
-
-##Creating `NSMutableDictionary` instances
-
-Let's say the phone number for Marc Bevilaqua changes. Let's go back to our simple dictionary to make this more straightforward.
+If you are looping through an `NSMutableDictionary`, attempting to modify the mutable dictionary will cause a crash:
 
 ```objc
-NSDictionary *contactDictionary = @{ @"Marc Bevilaqua": @"212-555-1212", 
-									    @"Jim Sherman": @"858-111-9999",
- 									 @"Lena Ricciardi": @"973-666-1111" };
-```
+// Bad example:
 
-But, as we just discussed, we have no means to mutate a straight `NSDictionary`. So, how do we make a mutable dictionary with some default values? The trouble is that the dictionary literal syntax (`@{ ... }`) returns an `NSDictionary`. We have two options to convert that to an `NSMutableDictionary`:
-
-1. Use `NSMutableDictionary`'s `-initWithDictionary:`. This creates a new mutable dictionary using the values in the dictionary argument. So, we could do this:
-
-	```objc
-	NSDictionary *immutableContactDictionary = @{ @"Marc Bevilaqua": @"212-555-1212", 
-												     @"Jim Sherman": @"858-111-9999",
- 									              @"Lena Ricciardi": @"973-666-1111" };
-
- 	NSMutableDictionary *contactDictionary = [[NSMutableDictionary alloc] initWithDictionary:immutableContactDictionary];
-	```
-
-2. Use `-mutableCopy` on the literal `NSDictionary`. This method does exactly what it sounds like -- it makes a copy of the receiver that is mutable. So, this option is a little shorter than the first:
-
-	```objc
-	NSDictionary *contactDictionary = [@{ @"Marc Bevilaqua": @"212-555-1212", 
-										  @"Jim Sherman": @"858-111-9999",
-									      @"Lena Ricciardi": @"973-666-1111" } mutableCopy];
-	```
-
-
-##Modifying a dictionary
-
-Now that we have a mutable dictionary, there are a couple of ways to change things in it. First:
-
-```objc
-contactDictionary[@"Marc Bevilaqua"] = @"201-973-0101";
-```
-
-Alternatively, you may see the following older syntax, using the NSDictionary method `setObject:ForKey:`.
-
-```objc
-[contactDictionary setObject:@"201-973-0101" forKey:@"Marc Bevilaqua"];
-```
-
-Again, use what you feel most comfortable with. Both of these will change the value for a given key, or add it if the key is not currently in the dictionary.
-
-To remove an object for a key, you would use:
-
-```objc
-[contactDictionary removeObjectForKey:@"Marc Bevilaqua"];
-```
-
-## `[[NSMutableDictionary alloc] init]`
-
-If you are building a dictionary from scratch, you may want to initialize it separately from assigning key-value pairs. You can do this using the more traditional syntax using `alloc` and `init`, which will give you an empty dictionary. Take the following examples where we have some names and phone numbers in arrays and want to create a useful dictionary out of them:
-
-```objc
-- (NSDictionary *)createDictionaryFromArrays {
-
-	NSArray *names = @[@"James", @"Marc", @"Rich"];
-	NSArray *phoneNumbers = @[@"858-111-9999", @"212-555-1212", @"973-666-1111"];
-
-	NSMutableDictionary *dictionaryIWillAddStuffTo = [[NSMutableDictionary alloc] init];
-
-	for (NSInteger i = 0; i < [phoneNumbers count]; i++) {
-		dictionaryIWillAddStuffTo[names[i]] = phoneNumbers[i];
-	}
+for (NSString *key in mJenny) {
+    if ([key isEqualToString:@"relationship"]) {
+        mJenny[@"relationship"] = @"Friend";
+    }
 }
 ```
+This will produce an error that reads like this:
 
-## Important tip
+```
+*** Terminating app due to uncaught exception 
+'NSGenericException', reason: '*** Collection <__NSDictionaryM:
+0x7fdfe2e0ab50> was mutated while being enumerated.'
+```
 
-If you are looping through an `NSMutableDictionary`, you cannot modify that dictionary inside of the loop. If you really must do this, make a copy of the dictionary (with `-copy`) before the loop and modify that instead.
+If you wish to alter a mutable dictionary inside of a loop, make sure to iterate over an array of the keys using `allKeys` instead of the dictionary itself:
 
+```objc
+for (NSString *key in [mJenny allKeys]) {
+    if ([key isEqualToString:@"relationship"]) {
+        mJenny[@"relationship"] = @"Friend";
+    }
+}
 
-## What can be the keys of a dictionary?
+NSLog(@"%@", mJenny);
+```
+This will successfully print:
 
-There are restrictions on what can be the keys in an `NSDictionary`, due to some technicalities in how it's implemented. There are three conditions a class must meet to be suitable as a dictionary key:
-
-1. It must conform to the `NSCopying` protocol. Dictionary keys are copied when they're put into the dictionary, and `NSCopying` is the protocol that represents that capability. There's a hint that this is the case in the definition of `NSMutableDictionary`'s method for setting the value for a key: `- (void)setObject:(id)anObject forKey:(id <NSCopying>)aKey;`.
-
-2. It must override `-isEqual:` to provide a meaningful definition of equality of instances based on the properties of those instances.
-
-3. It must override `-hash` to provide a [hash](http://en.wikipedia.org/wiki/Hash_function) based on the properties of an instance. Hashes and how to best create them is a huge topic in computer science. Generally it's best to defer to the built-in implementation of `-hash` from a property on the instance, if possible. 
-
-Here's a good [blog post](http://bynomial.com/blog/?p=73) that goes into more detail about why these conditions exist and how to implement them. If you're interested in the ins-and-outs of equality in Objective-C (and more on `-hash`), check out this [NSHipster article](http://nshipster.com/equality/).
-
-Feeling a little intimidated? Here's the good news: a lot of Apple's built-in classes satisfy these three criteria. `NSString`, `NSNumber`, `NSDate`, `NSData`, and `NSValue` are all perfectly fine to use as keys. Technically, so are `NSArray` and `NSDictionary` (but not the mutable versions!), though that would be really weird. (This set of types is sometimes referred to as the "property list types" -- they are basic value types that can be direclty written to disk by built-in methods. As a side-effect of that they're perfect for dictionary keys.)
-
-But, don't assume all built-in classes are acceptable. For instance, `UIView` is not: it is not copyable. 
-
-Note that **there are no such restrictions on values**: any object is fine. (Primitives are not, though. Hence `NSNumber` and other such wrapper classes.)
+```
+{
+    "city_state" = "Anywhere, USA";
+    "email_address" = "jenny@email.com";
+    "first_name" = Jenny;
+    "last_name" = Curran;
+    "phone_number" = "(555) 867-5309";
+    "physical_address" = "123 Street Name";
+    relationship = "Friend";
+    "zip_code" = 00409;
+}
+```
+It looks like she didn't stay mad at us forever.
