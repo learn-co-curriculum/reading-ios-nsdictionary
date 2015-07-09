@@ -103,9 +103,19 @@ This is a lot of work, and if we miss adding a field to just one contact's array
 
 Enter key-value pairing.
 
+## Dictionaries: Words And Definitions
+
+Dictionaries are a collection type common to most programming languages. They are aptly named for their resemblance to (and usefulness as) language lexicons (also called dictionaries). While most lexical dictionaries are alphabetized, the order of their contents is not fundamental to their nature. What is fundamental, however, is that each word in the lexicon is printed with the correct definition. When looking up the definition of "jentacular", for example, we should expect the lexicon to inform us of the correct meaning: "of or pertaining to a breakfast taken early in the morning". It matters little which specific page the word is printed on—what's important is getting the definition right!
+
+```
+WORD (KEY) : DEFINITION (VALUE)
+jentacular : of or pertaining to a breakfast taken early in the morning.
+```
+In programming, dictionaries aren't just used for the definitions of words. They store an unordered group of key-value pairs. A key-value pair is a binding of two objects: the descriptive accessor of a piece of information called the "key" (the word), and the information itself called the "value" (the definition).
+
 ## Creating An `NSDictionary`
 
-Dictionaries are a collection type common to most programming languages. They store an unordered group of key-value pairs. A key-value pair is a binding of two objects: the descriptive accessor of a piece of information (the "key"), and the information itself (the "value"). The base dictionary type in Objective-C is `NSDictionary` and has its own literal syntax that looks like this:
+The base dictionary type in Objective-C is `NSDictionary` and has its own literal syntax that looks like this:
 
 ```objc
 NSDictionary *keyAndValue   = @{ key : value };
@@ -145,9 +155,11 @@ This might print:
     "zip_code" = 00409;
 }
 ```
-Did you notice how the order changed when it printed? That's because Apple does ***not*** guarantee that a dictionary will maintain the order of its components (you should always expect that it won't). What it *does* guarantee, however, is the key-value binding. Because of this, dictionaries do not respond to indexing.
+Did you notice how the order changed when it printed? That's because Apple does ***not*** guarantee that a dictionary will maintain the order of its components (you should always expect that it won't). What it *does* guarantee, however, is the key-value binding. 
 
-Then how do we access the information it contains? By sending it a valid key, of course.
+When looking up a definition in a lexical dictionary, it's unimportant to the word-to-definition binding exactly which place they hold in the dictionary. If we want to find the definition of "bibble", for example, it's unimportant to the binding whether it's the 298th word in the lexicon or the 300th, so long as it correctly defines itself as "to drink often; to eat and/or drink noisily".
+
+In a similar way to looking up the definition of a word in a lexical dictionary, a dictionary in programming is accessed by submitting the key whose value we wish to get.
 
 ## Accessing A Dictionary
 
@@ -175,7 +187,7 @@ This will print: `(555) 867-5309`.
 
 #### Recognizing `objectForKey:`
 
-This literal syntax for accessing a dictionary implicitly calls the `objectForKey:` method on `NSDictionary`. You may see this method syntax in examples online which you can implement in your own code using the literal.
+This literal syntax for accessing a dictionary implicitly calls the `objectForKey:` method on `NSDictionary`. You may see this method syntax in examples online which you can implement in your own code using the literal. In general, avoid using `objectForKey:` in your own code.
 
 ```objc
 NSString *jennysPhoneNumber = [jenny objectForKey:@"phone_number"];
@@ -226,7 +238,7 @@ Notice again that the order was not preserved.
 
 ![](https://curriculum-content.s3.amazonaws.com/ios/reading-ios-nsdictionary/grabAllKeys_meme.jpg)
 
-There's a handy method on `NSDictionary` called `allKeys` that returns an array of all of the keys (and only the keys). This is helpful in sorting and searching (which we'll discuss in other readings), but also in defensive programming to make sure that a dictionary will respond to a key before attempting to access it. Implementing a "key check" can avoid receiving `nil` from attempts to access a dictionary key that doesn't exist:
+There's a handy method on `NSDictionary` called `allKeys` that returns an array of all of the keys (and only the keys). This is helpful in sorting and searching (which we'll discuss in other readings), but also in defensive programming to make sure that a dictionary will respond to a key before attempting to access it. Since accessing a dictionary with a nonexistent key returns `nil`, we can implement a "key check" to avoid receiving `nil` from attempts to access a dictionary with a nonexistent key:
 
 ```objc
 NSLog(@"%@", jenny[@"last_name"]);
