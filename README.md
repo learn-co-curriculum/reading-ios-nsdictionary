@@ -405,3 +405,5 @@ This will successfully print:
 }
 ```
 It looks like she didn't stay mad at us forever.
+
+<a href='https://learn.co/lessons/reading-ios-nsdictionary' data-visibility='hidden'>View this lesson on Learn.co</a>
