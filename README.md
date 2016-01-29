@@ -406,4 +406,4 @@ This will successfully print:
 ```
 It looks like she didn't stay mad at us forever.
 
-<a href='https://learn.co/lessons/reading-ios-nsdictionary' data-visibility='hidden'>View this lesson on Learn.co</a>
+<p data-visibility='hidden'>View <a href='https://learn.co/lessons/reading-ios-nsdictionary' title='Key-value Pairing: NSDictionary'>Key-value Pairing: NSDictionary</a> on Learn.co and start learning to code for free.</p>
